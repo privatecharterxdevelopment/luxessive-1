@@ -95,6 +95,11 @@
     const h = location.hash || '#/';
     window.scrollTo(0, 0);
     if (h.startsWith('#/product/')) renderPDP(+h.split('/')[2]);
+    else if (h.startsWith('#/shop')) {
+      const cat = decodeURIComponent(h.split('/')[2] || '');
+      activeFilter = cat || 'all';
+      renderShop();
+    }
     else if (h === '#/checkout') renderCheckout();
     else if (h === '#/success') renderSuccess();
     else renderHome();
@@ -132,10 +137,10 @@
         <div class="split-panel">
           <div class="panel-top">
             <span class="panel-label">LUXESSIVE Products</span>
-            <a href="#/" class="panel-link"><span class="dot"></span> Shop</a>
+            <a href="#/shop" class="panel-link"><span class="dot"></span> Shop</a>
           </div>
           <div class="panel-nav">
-            ${LEFT_CATS.map((c, i) => `<div class="panel-nav__item ${i === 0 ? 'is-active' : ''}" data-lcat="${i}"><span class="dot"></span> ${c.label}</div>`).join('')}
+            ${LEFT_CATS.map((c, i) => `<a href="#/shop${c.filter === 'all' ? '' : '/' + c.filter}" class="panel-nav__item ${c.filter === activeFilter ? 'is-active' : ''}"><span class="dot"></span> ${c.label}</a>`).join('')}
           </div>
           <div class="panel-showcase" ${lp ? `data-goto="${lp.id}"` : ''}>
             ${lp ? `<div class="showcase-product">
@@ -156,10 +161,10 @@
         <div class="split-panel split-panel--right">
           <div class="panel-top">
             <span class="panel-label">Bags & Accessories</span>
-            <a href="#/" class="panel-link"><span class="dot"></span> Discover</a>
+            <a href="#/shop" class="panel-link"><span class="dot"></span> Discover</a>
           </div>
           <div class="panel-nav">
-            ${RIGHT_CATS.map((c, i) => `<div class="panel-nav__item ${i === 1 ? 'is-active' : ''}" data-rcat="${i}"><span class="dot"></span> ${c.label}</div>`).join('')}
+            ${RIGHT_CATS.map((c, i) => `<a href="#/shop${c.filter === 'all' ? '' : '/' + c.filter}" class="panel-nav__item ${c.filter === activeFilter ? 'is-active' : ''}"><span class="dot"></span> ${c.label}</a>`).join('')}
           </div>
           <div class="panel-showcase" ${rp ? `data-goto="${rp.id}"` : ''}>
             ${rp ? `<div class="showcase-product">
@@ -272,6 +277,89 @@
     document.getElementById('homeCartBtn')?.addEventListener('click', openCart);
 
     // Fade in grid cards
+    setTimeout(() => {
+      app.querySelectorAll('.shop-card').forEach((el, i) => {
+        el.classList.add('fade-in');
+        setTimeout(() => el.classList.add('is-visible'), i * 40);
+      });
+    }, 50);
+  }
+
+  /* ==================================================
+     SHOP (products only, no hero)
+     ================================================== */
+  function renderShop() {
+    const filtered = activeFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === activeFilter);
+
+    app.innerHTML = `
+      <section class="shop-section shop-section--full">
+        <div class="shop-header">
+          <div class="shop-header__left">
+            <a href="#/" class="shop-header__back">←</a>
+            <span class="shop-header__title">Shop</span>
+            <div class="shop-filters">
+              ${['all','Clothing','Shoes','Bags'].map(f => `<a href="#/shop${f === 'all' ? '' : '/' + f}" class="filter-pill ${activeFilter === f ? 'is-active' : ''}">${f === 'all' ? 'All' : f}</a>`).join('')}
+            </div>
+          </div>
+          <span class="shop-header__count">${filtered.length} pieces</span>
+        </div>
+        <div class="shop-grid">
+          ${filtered.map(p => `
+            <article class="shop-card" data-pid="${p.id}">
+              <div class="shop-card__image">
+                ${num(p.id)}
+                <button class="shop-card__add" data-qa="${p.id}" aria-label="Quick add">+</button>
+              </div>
+              <div class="shop-card__meta">
+                <span class="shop-card__name">${p.name}</span>
+                <span class="shop-card__price">€${p.price}</span>
+              </div>
+              <div class="shop-card__colors">
+                ${p.colors.map(c => `<span class="swatch" style="background:${c.hex};border-color:${swatchBorder(c.hex)}" title="${c.name}"></span>`).join('')}
+              </div>
+            </article>
+          `).join('')}
+        </div>
+        <div style="max-width:1400px;margin:0 auto;padding:32px 36px 0;display:flex;justify-content:flex-end">
+          <button class="pill pill--outline" id="shopCartBtn">
+            <span class="dot" style="background:var(--black)"></span>
+            Cart (<span class="js-cart-count">${cartCount()}</span>)
+          </button>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <span>&copy; 2026 LUXESSIVE</span>
+        <div class="site-footer__links">
+          <a href="#">Instagram</a>
+          <a href="#">About</a>
+          <a href="#">Shipping</a>
+          <a href="#">Privacy</a>
+        </div>
+      </footer>
+    `;
+
+    // Shop card click
+    app.querySelectorAll('.shop-card').forEach(card => card.addEventListener('click', e => {
+      if (e.target.closest('[data-qa]')) return;
+      location.hash = '#/product/' + card.dataset.pid;
+    }));
+
+    // Quick add
+    app.querySelectorAll('[data-qa]').forEach(btn => btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const p = PRODUCTS.find(x => x.id === +btn.dataset.qa);
+      if (!p) return;
+      addToCart(p.id, p.colors[0].name, p.sizes.find(s => !p.disabledSizes.includes(s)) || p.sizes[0]);
+      btn.textContent = '✓';
+      btn.style.cssText = 'background:var(--black);color:var(--white);opacity:1;transform:translateY(0)';
+      setTimeout(() => { btn.textContent = '+'; btn.style.cssText = ''; }, 900);
+    }));
+
+    // Cart button
+    document.getElementById('shopCartBtn')?.addEventListener('click', openCart);
+
+    // Fade in
     setTimeout(() => {
       app.querySelectorAll('.shop-card').forEach((el, i) => {
         el.classList.add('fade-in');
