@@ -1,5 +1,5 @@
 /* ===================================================
-   ÈSSENCE — Ultra Minimal Gallery Commerce
+   LUXESSIVE — Ultra Minimal Gallery Commerce
    Split-screen · Floating products · Dot nav
    =================================================== */
 
@@ -88,12 +88,12 @@
   ];
 
   /* ---- State ---- */
-  let cart = JSON.parse(localStorage.getItem('essence_cart') || '[]');
+  let cart = JSON.parse(localStorage.getItem('luxessive_cart') || '[]');
   let activeFilter = 'all';
   let heroLeftIdx = 0;  // which product is shown on left panel
   let heroRightIdx = 0;
 
-  function saveCart() { localStorage.setItem('essence_cart', JSON.stringify(cart)); updateCartCount(); }
+  function saveCart() { localStorage.setItem('luxessive_cart', JSON.stringify(cart)); updateCartCount(); }
   function addToCart(pid, color, size, qty = 1) {
     const ex = cart.find(i => i.productId === pid && i.color === color && i.size === size);
     if (ex) ex.qty += qty; else cart.push({ productId: pid, color, size, qty });
@@ -191,7 +191,7 @@
         <!-- Left Panel -->
         <div class="split-panel">
           <div class="panel-top">
-            <span class="panel-label">ÈSSENCE Products</span>
+            <span class="panel-label">LUXESSIVE Products</span>
             <a href="#/" class="panel-link"><span class="dot"></span> Shop</a>
           </div>
           <div class="panel-nav">
@@ -277,7 +277,7 @@
 
       <!-- Footer -->
       <footer class="site-footer">
-        <span>&copy; 2026 ÈSSENCE</span>
+        <span>&copy; 2026 LUXESSIVE</span>
         <div class="site-footer__links">
           <a href="#">Instagram</a>
           <a href="#">About</a>
@@ -460,7 +460,7 @@
       let ok = true;
       fields.forEach(id => { const el = document.getElementById(id); if (!el?.value.trim()) { el?.classList.add('is-error'); ok = false; } else el?.classList.remove('is-error'); });
       if (!ok) return;
-      sessionStorage.setItem('essence_order', JSON.stringify({ number: 'ES-' + Math.random().toString(36).substring(2,8).toUpperCase(), email: document.getElementById('email').value, total, items: cartCount(), shipping: ship }));
+      sessionStorage.setItem('luxessive_order', JSON.stringify({ number: 'LX-' + Math.random().toString(36).substring(2,8).toUpperCase(), email: document.getElementById('email').value, total, items: cartCount(), shipping: ship }));
       clearCart(); location.hash = '#/success';
     });
   }
@@ -469,7 +469,7 @@
      SUCCESS
      ================================================== */
   function renderSuccess() {
-    const o = JSON.parse(sessionStorage.getItem('essence_order') || '{}');
+    const o = JSON.parse(sessionStorage.getItem('luxessive_order') || '{}');
     app.innerHTML = `<div class="success"><div class="success__inner">
       <div class="success__check"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 16 14 22 24 10"/></svg></div>
       <h1 class="success__title">Thank You</h1>
@@ -483,7 +483,7 @@
       </div>
       <a href="#/" class="pill pill--dark">Continue Shopping</a>
     </div></div>`;
-    sessionStorage.removeItem('essence_order');
+    sessionStorage.removeItem('luxessive_order');
   }
 
   /* ---- Init ---- */
