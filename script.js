@@ -6,6 +6,57 @@
 (() => {
   'use strict';
 
+  const FALLBACK_PRODUCTS = [
+    { id: 1, name: 'Oversized Cotton Tee', price: 85, category: 'Clothing',
+      colors: [{ name: 'White', hex: '#ffffff' }, { name: 'Grey', hex: '#b0b0b0' }, { name: 'Black', hex: '#111111' }],
+      sizes: ['XS','S','M','L','XL'], disabledSizes: [],
+      description: 'A relaxed-fit tee crafted from heavyweight organic cotton. Dropped shoulders and a boxy silhouette.',
+      details: ['100% organic cotton, 240gsm','Relaxed oversized fit','Ribbed crew neck','Made in Portugal'],
+      care: ['Machine wash cold','Do not bleach','Tumble dry low','Iron on low heat'] },
+    { id: 2, name: 'Wide Leg Trousers', price: 145, category: 'Clothing',
+      colors: [{ name: 'Black', hex: '#111111' }, { name: 'Charcoal', hex: '#555555' }],
+      sizes: ['XS','S','M','L','XL'], disabledSizes: ['XS'],
+      description: 'Clean-lined wide leg trousers with a high waist and pressed crease. Fluid wool-blend.',
+      details: ['70% wool, 30% polyester','High waist, wide leg','Side pockets','Made in Italy'],
+      care: ['Dry clean only','Iron on medium heat','Do not tumble dry'] },
+    { id: 3, name: 'Minimal Leather Sneaker', price: 220, category: 'Shoes',
+      colors: [{ name: 'White', hex: '#ffffff' }, { name: 'Black', hex: '#111111' }],
+      sizes: ['38','39','40','41','42','43','44','45'], disabledSizes: ['45'],
+      description: 'A pared-back sneaker in full-grain Italian leather. Margom rubber sole, minimal branding.',
+      details: ['Full-grain Italian leather','Leather lining','Margom rubber outsole','Made in Italy'],
+      care: ['Wipe with damp cloth','Use leather conditioner','Store with shoe trees'] },
+    { id: 4, name: 'Structured Tote Bag', price: 310, category: 'Bags',
+      colors: [{ name: 'Black', hex: '#111111' }, { name: 'Stone', hex: '#c8bfa9' }],
+      sizes: ['One Size'], disabledSizes: [],
+      description: 'An architectural tote in vegetable-tanned leather. Structured base, reinforced handles.',
+      details: ['Vegetable-tanned leather','38 × 32 × 14 cm','Interior zip pocket','Made in Spain'],
+      care: ['Avoid prolonged sun exposure','Wipe with dry cloth','Use leather balm quarterly'] },
+    { id: 5, name: 'Deconstructed Blazer', price: 395, category: 'Clothing',
+      colors: [{ name: 'Black', hex: '#111111' }],
+      sizes: ['XS','S','M','L','XL'], disabledSizes: ['XS','XL'],
+      description: 'An unstructured blazer with soft shoulders. No lining, no padding — just fabric and form.',
+      details: ['100% wool crepe','Unstructured, no padding','Single button closure','Made in Italy'],
+      care: ['Dry clean recommended','Steam to refresh','Hang on wide hanger'] },
+    { id: 6, name: 'Suede Chelsea Boot', price: 275, category: 'Shoes',
+      colors: [{ name: 'Sand', hex: '#c8b89a' }, { name: 'Black', hex: '#111111' }],
+      sizes: ['39','40','41','42','43','44','45'], disabledSizes: [],
+      description: 'A clean Chelsea boot in brushed suede. Blake-stitched for a sleek profile.',
+      details: ['Premium suede upper','Leather sole, stacked heel','Blake stitch','Made in Italy'],
+      care: ['Use suede brush regularly','Apply waterproof spray','Store with boot trees'] },
+    { id: 7, name: 'Relaxed Knit Polo', price: 120, category: 'Clothing',
+      colors: [{ name: 'Cream', hex: '#f0ebe0' }, { name: 'Black', hex: '#111111' }],
+      sizes: ['S','M','L','XL'], disabledSizes: [],
+      description: 'A textured knit polo in cotton-linen blend. Open collar, relaxed silhouette.',
+      details: ['60% cotton, 40% linen','Relaxed fit','Johnny collar','Made in Portugal'],
+      care: ['Hand wash cold','Lay flat to dry','Do not wring'] },
+    { id: 8, name: 'Leather Crossbody', price: 245, category: 'Bags',
+      colors: [{ name: 'Black', hex: '#111111' }, { name: 'Tan', hex: '#b5956b' }],
+      sizes: ['One Size'], disabledSizes: [],
+      description: 'A compact crossbody in full-grain leather. Magnetic closure, adjustable strap.',
+      details: ['Full-grain Italian leather','22 × 16 × 6 cm','Magnetic flap','Made in Italy'],
+      care: ['Wipe with dry cloth','Condition quarterly','Avoid water'] }
+  ];
+
   let PRODUCTS = [];
 
   const SHIPPING = 12;
@@ -457,9 +508,9 @@
     try {
       const resp = await fetch('/api/products');
       const data = await resp.json();
-      PRODUCTS = data.products || [];
+      PRODUCTS = data.products && data.products.length ? data.products : FALLBACK_PRODUCTS;
     } catch {
-      PRODUCTS = [];
+      PRODUCTS = FALLBACK_PRODUCTS;
     }
     buildShowcase();
     updateCartCount();
