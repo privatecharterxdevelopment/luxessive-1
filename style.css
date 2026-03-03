@@ -234,7 +234,6 @@ input, select { font-family: inherit; }
   color: var(--grey);
   cursor: pointer;
   transition: color .2s;
-  text-decoration: none;
 }
 .panel-nav__item:hover { color: var(--black); }
 .panel-nav__item.is-active {
@@ -349,21 +348,12 @@ input, select { font-family: inherit; }
   align-items: center;
   gap: 24px;
 }
-.shop-header__back {
-  font-size: 14px;
-  color: var(--dark);
-  text-decoration: none;
-  margin-right: 4px;
-  transition: color .2s;
-}
-.shop-header__back:hover { color: var(--black); }
 .shop-header__title {
   font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: .1em;
 }
-.shop-section--full { padding-top: 20px; }
 .shop-filters {
   display: flex;
   gap: 6px;
@@ -376,9 +366,6 @@ input, select { font-family: inherit; }
   color: var(--grey);
   transition: all .2s;
   cursor: pointer;
-  text-decoration: none;
-  background: none;
-  font-family: inherit;
 }
 .filter-pill:hover { border-color: var(--dark); color: var(--black); }
 .filter-pill.is-active {
