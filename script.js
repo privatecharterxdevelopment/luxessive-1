@@ -6,72 +6,7 @@
 (() => {
   'use strict';
 
-  const PRODUCTS = [
-    {
-      id: 1, name: 'Oversized Cotton Tee', price: 85, category: 'Clothing',
-      colors: [{ name: 'White', hex: '#ffffff' }, { name: 'Grey', hex: '#b0b0b0' }, { name: 'Black', hex: '#111111' }],
-      sizes: ['XS','S','M','L','XL'], disabledSizes: [],
-      description: 'A relaxed-fit tee crafted from heavyweight organic cotton. Dropped shoulders and a boxy silhouette.',
-      details: ['100% organic cotton, 240gsm','Relaxed oversized fit','Ribbed crew neck','Made in Portugal'],
-      care: ['Machine wash cold','Do not bleach','Tumble dry low','Iron on low heat']
-    },
-    {
-      id: 2, name: 'Wide Leg Trousers', price: 145, category: 'Clothing',
-      colors: [{ name: 'Black', hex: '#111111' }, { name: 'Charcoal', hex: '#555555' }],
-      sizes: ['XS','S','M','L','XL'], disabledSizes: ['XS'],
-      description: 'Clean-lined wide leg trousers with a high waist and pressed crease. Fluid wool-blend.',
-      details: ['70% wool, 30% polyester','High waist, wide leg','Side pockets','Made in Italy'],
-      care: ['Dry clean only','Iron on medium heat','Do not tumble dry']
-    },
-    {
-      id: 3, name: 'Minimal Leather Sneaker', price: 220, category: 'Shoes',
-      colors: [{ name: 'White', hex: '#ffffff' }, { name: 'Black', hex: '#111111' }],
-      sizes: ['38','39','40','41','42','43','44','45'], disabledSizes: ['45'],
-      description: 'A pared-back sneaker in full-grain Italian leather. Margom rubber sole, minimal branding.',
-      details: ['Full-grain Italian leather','Leather lining','Margom rubber outsole','Made in Italy'],
-      care: ['Wipe with damp cloth','Use leather conditioner','Store with shoe trees']
-    },
-    {
-      id: 4, name: 'Structured Tote Bag', price: 310, category: 'Bags',
-      colors: [{ name: 'Black', hex: '#111111' }, { name: 'Stone', hex: '#c8bfa9' }],
-      sizes: ['One Size'], disabledSizes: [],
-      description: 'An architectural tote in vegetable-tanned leather. Structured base, reinforced handles.',
-      details: ['Vegetable-tanned leather','38 × 32 × 14 cm','Interior zip pocket','Made in Spain'],
-      care: ['Avoid prolonged sun exposure','Wipe with dry cloth','Use leather balm quarterly']
-    },
-    {
-      id: 5, name: 'Deconstructed Blazer', price: 395, category: 'Clothing',
-      colors: [{ name: 'Black', hex: '#111111' }],
-      sizes: ['XS','S','M','L','XL'], disabledSizes: ['XS','XL'],
-      description: 'An unstructured blazer with soft shoulders. No lining, no padding — just fabric and form.',
-      details: ['100% wool crepe','Unstructured, no padding','Single button closure','Made in Italy'],
-      care: ['Dry clean recommended','Steam to refresh','Hang on wide hanger']
-    },
-    {
-      id: 6, name: 'Suede Chelsea Boot', price: 275, category: 'Shoes',
-      colors: [{ name: 'Sand', hex: '#c8b89a' }, { name: 'Black', hex: '#111111' }],
-      sizes: ['39','40','41','42','43','44','45'], disabledSizes: [],
-      description: 'A clean Chelsea boot in brushed suede. Blake-stitched for a sleek profile.',
-      details: ['Premium suede upper','Leather sole, stacked heel','Blake stitch','Made in Italy'],
-      care: ['Use suede brush regularly','Apply waterproof spray','Store with boot trees']
-    },
-    {
-      id: 7, name: 'Relaxed Knit Polo', price: 120, category: 'Clothing',
-      colors: [{ name: 'Cream', hex: '#f0ebe0' }, { name: 'Black', hex: '#111111' }],
-      sizes: ['S','M','L','XL'], disabledSizes: [],
-      description: 'A textured knit polo in cotton-linen blend. Open collar, relaxed silhouette.',
-      details: ['60% cotton, 40% linen','Relaxed fit','Johnny collar','Made in Portugal'],
-      care: ['Hand wash cold','Lay flat to dry','Do not wring']
-    },
-    {
-      id: 8, name: 'Leather Crossbody', price: 245, category: 'Bags',
-      colors: [{ name: 'Black', hex: '#111111' }, { name: 'Tan', hex: '#b5956b' }],
-      sizes: ['One Size'], disabledSizes: [],
-      description: 'A compact crossbody in full-grain leather. Magnetic closure, adjustable strap.',
-      details: ['Full-grain Italian leather','22 × 16 × 6 cm','Magnetic flap','Made in Italy'],
-      care: ['Wipe with dry cloth','Condition quarterly','Avoid water']
-    }
-  ];
+  let PRODUCTS = [];
 
   const SHIPPING = 12;
   const FREE_SHIP = 250;
@@ -170,19 +105,24 @@
   const num = id => String(id).padStart(2, '0');
   const swatchBorder = hex => (hex === '#ffffff' || hex === '#f0ebe0') ? '#d4d2cc' : hex;
 
-  // Products for hero panels
-  const clothingProducts = PRODUCTS.filter(p => p.category === 'Clothing');
-  const shoesProducts = PRODUCTS.filter(p => p.category === 'Shoes');
-  const bagsProducts = PRODUCTS.filter(p => p.category === 'Bags');
-  const leftShowcase = [clothingProducts[0], shoesProducts[0], clothingProducts[1]];
-  const rightShowcase = [bagsProducts[0], bagsProducts[1], shoesProducts[1]];
+  // Products for hero panels (rebuilt after API fetch)
+  let leftShowcase = [];
+  let rightShowcase = [];
+
+  function buildShowcase() {
+    const clothing = PRODUCTS.filter(p => p.category === 'Clothing');
+    const shoes = PRODUCTS.filter(p => p.category === 'Shoes');
+    const bags = PRODUCTS.filter(p => p.category === 'Bags');
+    leftShowcase = [clothing[0], shoes[0], clothing[1]].filter(Boolean);
+    rightShowcase = [bags[0], bags[1], shoes[1]].filter(Boolean);
+  }
 
   /* ==================================================
      HOME
      ================================================== */
   function renderHome() {
-    const lp = leftShowcase[heroLeftIdx];
-    const rp = rightShowcase[heroRightIdx];
+    const lp = leftShowcase[heroLeftIdx] || null;
+    const rp = rightShowcase[heroRightIdx] || null;
     const filtered = activeFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === activeFilter);
 
     app.innerHTML = `
@@ -197,15 +137,15 @@
           <div class="panel-nav">
             ${LEFT_CATS.map((c, i) => `<div class="panel-nav__item ${i === 0 ? 'is-active' : ''}" data-lcat="${i}"><span class="dot"></span> ${c.label}</div>`).join('')}
           </div>
-          <div class="panel-showcase" data-goto="${lp.id}">
-            <div class="showcase-product">
+          <div class="panel-showcase" ${lp ? `data-goto="${lp.id}"` : ''}>
+            ${lp ? `<div class="showcase-product">
               <div class="showcase-image">${num(lp.id)}</div>
               <div class="showcase-name">${lp.name}</div>
               <div class="showcase-price">€${lp.price}</div>
-            </div>
+            </div>` : ''}
           </div>
           <div class="panel-bottom">
-            <a class="pill pill--dark" data-goto="${lp.id}">Learn More</a>
+            ${lp ? `<a class="pill pill--dark" data-goto="${lp.id}">Learn More</a>` : ''}
             <div class="progress-dots">
               ${leftShowcase.map((_, i) => `<div class="progress-dash ${i === heroLeftIdx ? 'is-active' : ''}" data-lidx="${i}"></div>`).join('')}
             </div>
@@ -221,15 +161,15 @@
           <div class="panel-nav">
             ${RIGHT_CATS.map((c, i) => `<div class="panel-nav__item ${i === 1 ? 'is-active' : ''}" data-rcat="${i}"><span class="dot"></span> ${c.label}</div>`).join('')}
           </div>
-          <div class="panel-showcase" data-goto="${rp.id}">
-            <div class="showcase-product">
+          <div class="panel-showcase" ${rp ? `data-goto="${rp.id}"` : ''}>
+            ${rp ? `<div class="showcase-product">
               <div class="showcase-image">${num(rp.id)}</div>
               <div class="showcase-name">${rp.name}</div>
               <div class="showcase-price">€${rp.price}</div>
-            </div>
+            </div>` : ''}
           </div>
           <div class="panel-bottom">
-            <a class="pill pill--dark" data-goto="${rp.id}">Learn More</a>
+            ${rp ? `<a class="pill pill--dark" data-goto="${rp.id}">Learn More</a>` : ''}
             <div class="progress-dots">
               ${rightShowcase.map((_, i) => `<div class="progress-dash ${i === heroRightIdx ? 'is-active' : ''}" data-ridx="${i}"></div>`).join('')}
             </div>
@@ -455,12 +395,38 @@
     document.getElementById('card')?.addEventListener('input', e => { let v = e.target.value.replace(/\D/g,'').substring(0,16); e.target.value = v.replace(/(.{4})/g,'$1 ').trim(); });
     document.getElementById('exp')?.addEventListener('input', e => { let v = e.target.value.replace(/\D/g,'').substring(0,4); if (v.length >= 2) v = v.substring(0,2)+' / '+v.substring(2); e.target.value = v; });
 
-    document.getElementById('placeBtn')?.addEventListener('click', () => {
+    document.getElementById('placeBtn')?.addEventListener('click', async () => {
       const fields = ['email','fn','ln','addr','city','zip','card','exp','cvc'];
       let ok = true;
       fields.forEach(id => { const el = document.getElementById(id); if (!el?.value.trim()) { el?.classList.add('is-error'); ok = false; } else el?.classList.remove('is-error'); });
       if (!ok) return;
-      sessionStorage.setItem('luxessive_order', JSON.stringify({ number: 'LX-' + Math.random().toString(36).substring(2,8).toUpperCase(), email: document.getElementById('email').value, total, items: cartCount(), shipping: ship }));
+
+      const orderPayload = {
+        customer: {
+          email: document.getElementById('email').value,
+          firstName: document.getElementById('fn').value,
+          lastName: document.getElementById('ln').value,
+          address: document.getElementById('addr').value,
+          city: document.getElementById('city').value,
+          postal: document.getElementById('zip').value,
+          country: document.getElementById('country').value
+        },
+        items: cart.map(it => {
+          const p = PRODUCTS.find(x => x.id === it.productId);
+          return { productId: it.productId, productName: p ? p.name : 'Unknown', color: it.color, size: it.size, qty: it.qty, price: p ? p.price : 0 };
+        }),
+        subtotal: sub,
+        shipping: ship,
+        total
+      };
+
+      try {
+        const resp = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderPayload) });
+        const result = await resp.json();
+        sessionStorage.setItem('luxessive_order', JSON.stringify({ number: result.order.id, email: orderPayload.customer.email, total, items: cartCount(), shipping: ship }));
+      } catch {
+        sessionStorage.setItem('luxessive_order', JSON.stringify({ number: 'LX-' + Math.random().toString(36).substring(2,8).toUpperCase(), email: orderPayload.customer.email, total, items: cartCount(), shipping: ship }));
+      }
       clearCart(); location.hash = '#/success';
     });
   }
@@ -487,6 +453,17 @@
   }
 
   /* ---- Init ---- */
-  updateCartCount();
-  navigate();
+  async function init() {
+    try {
+      const resp = await fetch('/api/products');
+      const data = await resp.json();
+      PRODUCTS = data.products || [];
+    } catch {
+      PRODUCTS = [];
+    }
+    buildShowcase();
+    updateCartCount();
+    navigate();
+  }
+  init();
 })();
