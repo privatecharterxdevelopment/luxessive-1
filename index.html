@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ÈSSENCE — Contemporary Essentials</title>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Overlays -->
+  <div class="overlay" id="menuOverlay"></div>
+  <div class="overlay" id="cartOverlay"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="#/" class="logo">ÈSSENCE</a>
+      <nav class="nav-desktop">
+        <a href="#/">Shop</a>
+        <a href="#/">About</a>
+        <a href="#/">Contact</a>
+      </nav>
+      <div class="header__right">
+        <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+          Cart <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+          <span class="menu-toggle__icon"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <aside class="side-menu" id="sideMenu">
+    <div class="side-menu__inner">
+      <div class="side-menu__header">
+        <span class="side-menu__label">Menu</span>
+      </div>
+      <nav class="side-menu__nav">
+        <div class="menu-group">
+          <button class="menu-group__toggle">
+            <span>Shop</span>
+            <span class="menu-plus"></span>
+          </button>
+          <ul class="menu-group__list">
+            <li><a href="#/">Clothing</a></li>
+            <li><a href="#/">Shoes</a></li>
+            <li><a href="#/">Bags</a></li>
+            <li><a href="#/">Accessories</a></li>
+          </ul>
+        </div>
+        <div class="menu-group">
+          <button class="menu-group__toggle">
+            <span>Collections</span>
+            <span class="menu-plus"></span>
+          </button>
+          <ul class="menu-group__list">
+            <li><a href="#/">SS26</a></li>
+            <li><a href="#/">AW25</a></li>
+            <li><a href="#/">Archive</a></li>
+          </ul>
+        </div>
+        <a href="#/" class="menu-link">About</a>
+        <a href="#/" class="menu-link">Contact</a>
+      </nav>
+      <div class="side-menu__footer">
+        <a href="#">Instagram</a>
+        <a href="#">Pinterest</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Cart Drawer -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer__header">
+      <h3 class="cart-drawer__title">Your Cart</h3>
+      <button class="cart-drawer__close" id="cartClose" aria-label="Close cart">
+        <span class="menu-toggle__icon"></span>
+      </button>
+    </div>
+    <div class="cart-drawer__body" id="cartBody">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="cart-drawer__footer" id="cartFooter">
+      <!-- Rendered by JS -->
+    </div>
+  </aside>
+
+  <!-- Main App Container (SPA) -->
+  <main id="app"></main>
+
+  <script src="script.js"></script>
+</body>
+</html>
