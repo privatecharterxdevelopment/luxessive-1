@@ -608,6 +608,33 @@ input, select { font-family: inherit; }
 .pdp__accordion-content ul li { padding: 2px 0 2px 12px; position: relative; }
 .pdp__accordion-content ul li::before { content: '—'; position: absolute; left: 0; color: var(--muted); font-size: 8px; }
 
+/* PDP entrance animations */
+.pdp__gallery {
+  opacity: 0;
+  transition: opacity .5s var(--ease);
+}
+.pdp__gallery.is-revealed { opacity: 1; }
+
+.pdp__info > * {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .45s var(--ease), transform .45s var(--ease);
+}
+.pdp__info > *.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pdp__thumbs .pdp__thumb {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+.pdp__thumbs .pdp__thumb.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ===================================================
    CHECKOUT
    =================================================== */

@@ -186,7 +186,7 @@
             <a href="#/" class="panel-link"><span class="dot"></span> Shop</a>
           </div>
           <div class="panel-nav">
-            ${LEFT_CATS.map((c, i) => `<div class="panel-nav__item ${i === 0 ? 'is-active' : ''}" data-lcat="${i}"><span class="dot"></span> ${c.label}</div>`).join('')}
+            ${LEFT_CATS.map((c, i) => `<div class="panel-nav__item ${c.filter === activeFilter ? 'is-active' : ''}" data-lcat="${i}"><span class="dot"></span> ${c.label}</div>`).join('')}
           </div>
           <div class="panel-showcase" ${lp ? `data-goto="${lp.id}"` : ''}>
             ${lp ? `<div class="showcase-product">
@@ -207,10 +207,10 @@
         <div class="split-panel split-panel--right">
           <div class="panel-top">
             <span class="panel-label">Bags & Accessories</span>
-            <a href="#/" class="panel-link"><span class="dot"></span> Discover</a>
+            <a class="panel-link" id="heroCartLink" style="cursor:pointer"><span class="dot"></span> Cart (<span class="js-cart-count">${cartCount()}</span>)</a>
           </div>
           <div class="panel-nav">
-            ${RIGHT_CATS.map((c, i) => `<div class="panel-nav__item ${i === 1 ? 'is-active' : ''}" data-rcat="${i}"><span class="dot"></span> ${c.label}</div>`).join('')}
+            ${RIGHT_CATS.map((c, i) => `<div class="panel-nav__item ${c.filter === activeFilter ? 'is-active' : ''}" data-rcat="${i}"><span class="dot"></span> ${c.label}</div>`).join('')}
           </div>
           <div class="panel-showcase" ${rp ? `data-goto="${rp.id}"` : ''}>
             ${rp ? `<div class="showcase-product">
@@ -288,6 +288,22 @@
     app.querySelectorAll('[data-ridx]').forEach(d => d.addEventListener('click', () => {
       heroRightIdx = +d.dataset.ridx;
       renderHome();
+    }));
+
+    // Category nav — left panel
+    app.querySelectorAll('[data-lcat]').forEach(el => el.addEventListener('click', () => {
+      activeFilter = LEFT_CATS[+el.dataset.lcat].filter;
+      renderHome();
+      document.querySelector('.shop-section')?.scrollIntoView({ behavior: 'smooth' });
+    }));
+    // Hero cart link (right panel)
+    document.getElementById('heroCartLink')?.addEventListener('click', openCart);
+
+    // Category nav — right panel
+    app.querySelectorAll('[data-rcat]').forEach(el => el.addEventListener('click', () => {
+      activeFilter = RIGHT_CATS[+el.dataset.rcat].filter;
+      renderHome();
+      document.querySelector('.shop-section')?.scrollIntoView({ behavior: 'smooth' });
     }));
 
     // Goto product
@@ -407,6 +423,22 @@
       app.querySelectorAll('.pdp__thumb').forEach(t => t.addEventListener('click', () => { app.querySelectorAll('.pdp__thumb').forEach(x => x.classList.remove('is-active')); t.classList.add('is-active'); }));
       app.querySelectorAll('.pdp__accordion-toggle').forEach(b => b.addEventListener('click', () => b.closest('.pdp__accordion-item').classList.toggle('is-expanded')));
       document.getElementById('pdpCartBtn')?.addEventListener('click', openCart);
+
+      // Staggered entrance animation
+      requestAnimationFrame(() => {
+        const gallery = app.querySelector('.pdp__gallery');
+        const infoEls = app.querySelectorAll('.pdp__info > *');
+        const thumbs = app.querySelectorAll('.pdp__thumb');
+
+        // Gallery fade
+        setTimeout(() => gallery?.classList.add('is-revealed'), 30);
+
+        // Thumbs stagger
+        thumbs.forEach((t, i) => setTimeout(() => t.classList.add('is-revealed'), 150 + i * 60));
+
+        // Info elements cascade
+        infoEls.forEach((el, i) => setTimeout(() => el.classList.add('is-revealed'), 100 + i * 55));
+      });
     }
     render();
   }
